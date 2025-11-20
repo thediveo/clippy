@@ -2,7 +2,10 @@ module github.com/thediveo/clippy
 
 go 1.24.0
 
-require github.com/spf13/cobra v1.10.1
+require (
+	github.com/spf13/cobra v1.10.1
+	golang.org/x/sync v0.16.0
+)
 
 require (
 	github.com/Masterminds/semver/v3 v3.4.0 // indirect
@@ -14,7 +17,6 @@ require (
 	golang.org/x/exp v0.0.0-20240909161429-701f63a606c0 // indirect
 	golang.org/x/mod v0.27.0 // indirect
 	golang.org/x/net v0.43.0 // indirect
-	golang.org/x/sync v0.16.0 // indirect
 	golang.org/x/sys v0.35.0 // indirect
 	golang.org/x/text v0.28.0 // indirect
 	golang.org/x/tools v0.36.0 // indirect
