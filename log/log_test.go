@@ -12,7 +12,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-package debug
+package log
 
 import (
 	"bytes"
@@ -20,12 +20,13 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/thediveo/clippy"
+	"github.com/thediveo/clippy/debug"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("debug and tint logging", func() {
+var _ = Describe("info+ logging", func() {
 
 	var rootCmd *cobra.Command
 	var output bytes.Buffer
@@ -44,59 +45,34 @@ var _ = Describe("debug and tint logging", func() {
 			},
 			RunE: func(*cobra.Command, []string) error { return nil },
 		}
-		SetWriter(rootCmd, &output)
+		debug.SetWriter(rootCmd, &output)
 		clippy.AddFlags(rootCmd)
 	})
 
-	It("defaults to logging infos or worse", func() {
+	It("defaults to logging only errors or worse", func() {
 		Expect(rootCmd.Execute()).To(Succeed())
 		slog.Debug("*debug*")
 		Expect(output.String()).To(BeEmpty())
 		slog.Info("*information*")
-		Expect(output.String()).To(MatchRegexp(`level=INFO msg=\*information\*`))
+		Expect(output.String()).To(BeEmpty())
+		slog.Error("*errør*")
+		Expect(output.String()).To(MatchRegexp(`level=ERROR msg=\*errør\*`))
 	})
 
-	It("logs debugs", func() {
-		rootCmd.SetArgs([]string{"foo", "--" + DebugFlagName})
+	It("logs information when requested", func() {
+		rootCmd.SetArgs([]string{"foo", "--" + LogFlagName})
+		Expect(rootCmd.Execute()).To(Succeed())
+		slog.Debug("*debug*")
+		Expect(output.String()).To(BeEmpty())
+		slog.Info("*inførmatiøn*")
+		Expect(output.String()).To(MatchRegexp(`level=INFO msg=\*inførmatiøn\*`))
+	})
+
+	It("still logs debugs when requested", func() {
+		rootCmd.SetArgs([]string{"foo", "--" + debug.DebugFlagName})
 		Expect(rootCmd.Execute()).To(Succeed())
 		slog.Debug("*debug*")
 		Expect(output.String()).To(MatchRegexp(`(?s)msg="debug logging enabled".*level=DEBUG msg=\*debug\*`))
-	})
-
-	It("changes the default", func() {
-		rootCmd.SetArgs([]string{"foo"})
-		SetDefaultLevel(rootCmd, slog.LevelDebug)
-		Expect(rootCmd.Execute()).To(Succeed())
-		slog.Debug("*debug*")
-		Expect(output.String()).To(MatchRegexp(`(?s)msg="debug logging enabled".*level=DEBUG msg=\*debug\*`))
-	})
-
-	It("tints", func() {
-		const (
-			ansiBrightGreen = "\u001b\\[92m"
-			ansiReset       = "\u001b\\[0m"
-		)
-
-		rootCmd.SetArgs([]string{"foo", "--" + TintedFlagName})
-		Expect(rootCmd.Execute()).To(Succeed())
-		slog.Info("hellorld!")
-		Expect(output.String()).To(MatchRegexp(ansiBrightGreen + "INF" + ansiReset + " hellorld!"))
-	})
-
-	Context("created when necessary", func() {
-
-		It("SetDefaultLevel", func() {
-			cmd := &cobra.Command{}
-			SetDefaultLevel(cmd, slog.LevelInfo)
-			Expect(cmd.Context()).NotTo(BeNil())
-		})
-
-		It("SetLevel", func() {
-			cmd := &cobra.Command{}
-			SetLevel(cmd, slog.LevelInfo)
-			Expect(cmd.Context()).NotTo(BeNil())
-		})
-
 	})
 
 })

@@ -1,6 +1,6 @@
 /*
 Package work provides running plugin work functions in parallel, such as for
-continously servicing HTTP endpoints, running continuous background work, and
+continuously servicing HTTP endpoints, running continuous background work, and
 more. All registered work executes in parallel and should gracefully wind down
 when asked nicely by cancelling the passed context.
 
