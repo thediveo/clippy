@@ -16,6 +16,7 @@ package debug
 
 import (
 	"cmp"
+	"context"
 	"io"
 	"log/slog"
 	"os"
@@ -50,15 +51,55 @@ func setupCLI(cmd *cobra.Command) {
 	cmd.PersistentFlags().Bool(TintedFlagName, false, "tints structured logging output")
 }
 
-type ctxIoWriterKey int
+// ctxKey "namespaces" the context keys this package uses internally for passing
+// API user configuration(s) via contexts attached to cobra commands.
+type ctxKey int
 
-const ctxIoWriter ctxIoWriterKey = 0
+const (
+	ctxDefaultLevel ctxKey = iota
+	ctxLevel
+	ctxIoWriter
+)
+
+// SetDefaultLevel allows API users to override the default log level (info)
+// with their own default level.
+func SetDefaultLevel(cmd *cobra.Command, level slog.Level) {
+	ctx := cmd.Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	cmd.SetContext(context.WithValue(ctx, ctxDefaultLevel, level))
+}
+
+// SetLevel allows API users to force a specific log level; the "--debug" flag
+// will then be ignored.
+func SetLevel(cmd *cobra.Command, level slog.Level) {
+	ctx := cmd.Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	cmd.SetContext(context.WithValue(ctx, ctxLevel, level))
+}
+
+func SetWriter(cmd *cobra.Command, w io.Writer) {
+	ctx := cmd.Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	cmd.SetContext(context.WithValue(ctx, ctxIoWriter, w))
+}
 
 // beforeCommand enables debug logging (and tinting) before any command finally
 // is executed.
 func beforeCommand(cmd *cobra.Command) error {
-	w := cmp.Or[io.Writer](cmd.Context().Value(ctxIoWriter).(io.Writer), os.Stderr)
 	level := slog.LevelInfo
+	if ctxForcedLevel, ok := cmd.Context().Value(ctxLevel).(slog.Level); ok {
+		level = ctxForcedLevel
+	} else if ctxNewDefaultLevel, ok := cmd.Context().Value(ctxDefaultLevel).(slog.Level); ok {
+		level = ctxNewDefaultLevel
+	}
+	w := cmp.Or[io.Writer](cmd.Context().Value(ctxIoWriter).(io.Writer), os.Stderr)
+
 	if debug, _ := cmd.PersistentFlags().GetBool(DebugFlagName); debug {
 		level = slog.LevelDebug
 	}
