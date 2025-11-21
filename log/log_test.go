@@ -40,6 +40,9 @@ var _ = Describe("info+ logging", func() {
 		output.Reset()
 
 		rootCmd = &cobra.Command{
+			Use:           "foo does bar",
+			SilenceUsage:  true,
+			SilenceErrors: true,
 			PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
 				return clippy.BeforeCommand(cmd)
 			},
@@ -47,6 +50,11 @@ var _ = Describe("info+ logging", func() {
 		}
 		debug.SetWriter(rootCmd, &output)
 		clippy.AddFlags(rootCmd)
+	})
+
+	It("rejects mixing --debug and --log", func() {
+		rootCmd.SetArgs([]string{"foo", "--" + LogFlagName, "--" + debug.DebugFlagName})
+		Expect(rootCmd.Execute()).To(MatchError(ContainSubstring("[debug log] were all set")))
 	})
 
 	It("defaults to logging only errors or worse", func() {
