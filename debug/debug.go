@@ -98,7 +98,8 @@ func beforeCommand(cmd *cobra.Command) error {
 	} else if ctxNewDefaultLevel, ok := cmd.Context().Value(ctxDefaultLevel).(slog.Level); ok {
 		level = ctxNewDefaultLevel
 	}
-	w := cmp.Or[io.Writer](cmd.Context().Value(ctxIoWriter).(io.Writer), os.Stderr)
+	w, _ := cmd.Context().Value(ctxIoWriter).(io.Writer)
+	w = cmp.Or[io.Writer](w, os.Stderr)
 
 	if debug, _ := cmd.PersistentFlags().GetBool(DebugFlagName); debug {
 		level = slog.LevelDebug

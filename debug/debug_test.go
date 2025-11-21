@@ -71,6 +71,11 @@ var _ = Describe("debug and tint logging", func() {
 		Expect(output.String()).To(MatchRegexp(`(?s)msg="debug logging enabled".*level=DEBUG msg=\*debug\*`))
 	})
 
+	It("resorts to stderr", func() {
+		SetWriter(rootCmd, nil)
+		Expect(rootCmd.Execute()).To(Succeed())
+	})
+
 	It("tints", func() {
 		const (
 			ansiBrightGreen = "\u001b\\[92m"
