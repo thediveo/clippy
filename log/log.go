@@ -18,9 +18,10 @@ import (
 	"log/slog"
 
 	"github.com/spf13/cobra"
+	"github.com/thediveo/go-plugger/v3"
+
 	"github.com/thediveo/clippy/cliplugin"
 	"github.com/thediveo/clippy/debug"
-	"github.com/thediveo/go-plugger/v3"
 )
 
 const (

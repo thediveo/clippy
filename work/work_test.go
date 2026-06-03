@@ -21,11 +21,12 @@ import (
 	"log/slog"
 	"time"
 
+	"github.com/spf13/cobra"
+	"github.com/thediveo/go-plugger/v3"
+
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	. "github.com/onsi/gomega/gleak"
-	"github.com/spf13/cobra"
-	"github.com/thediveo/go-plugger/v3"
 )
 
 var _ = Describe("service and background workers", func() {
