@@ -16,8 +16,9 @@ package clippy
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/thediveo/clippy/cliplugin"
 	"github.com/thediveo/go-plugger/v3"
+
+	"github.com/thediveo/clippy/cliplugin"
 )
 
 // AddFlags runs all registered [cliplugin.SetupCLI] plugin functions in order

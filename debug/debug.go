@@ -22,10 +22,10 @@ import (
 	"os"
 
 	"github.com/lmittmann/tint"
-
 	"github.com/spf13/cobra"
-	"github.com/thediveo/clippy/cliplugin"
 	"github.com/thediveo/go-plugger/v3"
+
+	"github.com/thediveo/clippy/cliplugin"
 )
 
 // Names of the CLI flags defined and used in this package.

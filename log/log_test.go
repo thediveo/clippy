@@ -19,6 +19,7 @@ import (
 	"log/slog"
 
 	"github.com/spf13/cobra"
+
 	"github.com/thediveo/clippy"
 	"github.com/thediveo/clippy/debug"
 

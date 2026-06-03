@@ -19,8 +19,9 @@ import (
 	"errors"
 
 	"github.com/spf13/cobra"
-	"github.com/thediveo/clippy/cliplugin"
 	"github.com/thediveo/go-plugger/v3"
+
+	"github.com/thediveo/clippy/cliplugin"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
