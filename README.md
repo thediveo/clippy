@@ -4,12 +4,11 @@
 [![License](https://img.shields.io/github/license/thediveo/clippy)](https://img.shields.io/github/license/thediveo/clippy)
 ![build and test](https://github.com/thediveo/clippy/actions/workflows/buildandtest.yaml/badge.svg?branch=master)
 ![goroutines](https://img.shields.io/badge/go%20routines-not%20leaking-success)
-[![Go Report Card](https://goreportcard.com/badge/github.com/thediveo/clippy)](https://goreportcard.com/report/github.com/thediveo/clippy)
 ![Coverage](https://img.shields.io/badge/Coverage-100.0%25-brightgreen)
 
 ...an opinionated modular cobra CLI support Go module, with the emphasis being
 on "_modular_". Instead of lumping all flag configuration and processing into
-one big mess, why not neatly cutting it into logical chunks (or "plugins").
+one big mess, why not neatly cutting it into logical chunks (or "plugins"), and then underline-importing the needed chunks in your `main`?
 
 ## DevContainer
 
@@ -35,5 +34,5 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Copyright and License
 
-`clippy` is Copyright 2024, 2025 Harald Albrecht, and licensed under the Apache
+`clippy` is Copyright 2024–2026 Harald Albrecht, and licensed under the Apache
 License, Version 2.0.
